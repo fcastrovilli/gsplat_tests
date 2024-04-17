@@ -1,22 +1,31 @@
 <script lang="ts">
-	import { dev } from '$app/environment';
-	import { base } from '$app/paths';
-	import * as SPLAT from 'gsplat';
-	import { onMount } from 'svelte';
+	import Scene from '$lib/scene.svelte';
+	const splats = ['sedia', 'cactino'];
+	let selector: HTMLSelectElement;
 
-	onMount(async () => {
-		const scene = new SPLAT.Scene();
-		const camera = new SPLAT.Camera();
-		const renderer = new SPLAT.WebGLRenderer();
-		const controls = new SPLAT.OrbitControls(camera, renderer.canvas);
-		renderer.setSize(window.innerWidth, window.innerHeight);
-		const url = dev ? '/splats/sedia.splat' : `${base}/splats/sedia.splat`;
-		await SPLAT.Loader.LoadAsync(url, scene, () => {});
-		const frame = () => {
-			controls.update();
-			renderer.render(scene, camera);
-			requestAnimationFrame(frame);
-		};
-		requestAnimationFrame(frame);
-	});
+	let unique = {};
+
+	function restart() {
+		unique = {};
+	}
 </script>
+
+<div class="absolute right-5 top-5 z-50">
+	<select
+		class="rounded-lg border p-2 font-semibold capitalize"
+		on:change={restart}
+		bind:this={selector}
+		name="splat"
+		id="splat"
+	>
+		{#each splats as splat}
+			<option class="capitalize" value={splat}>{splat}</option>
+		{/each}
+	</select>
+</div>
+
+{#if selector}
+	{#key unique}
+		<Scene name={selector.value} />
+	{/key}
+{/if}
