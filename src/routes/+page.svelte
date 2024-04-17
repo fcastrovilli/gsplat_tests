@@ -11,8 +11,6 @@
 		const controls = new SPLAT.OrbitControls(camera, renderer.canvas);
 		renderer.setSize(window.innerWidth, window.innerHeight);
 		const url = dev ? '/splats/sedia.splat' : `${base}/splats/sedia.splat`;
-		console.log('base', base);
-		console.log('url', url);
 		await SPLAT.Loader.LoadAsync(url, scene, () => {});
 		const frame = () => {
 			controls.update();
